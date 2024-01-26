@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HelloCS", "HelloCS\HelloCS.
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AboutMyEnvironment", "AboutMyEnvironment\AboutMyEnvironment.csproj", "{90A0E8EB-E1DB-4AE7-80E0-E222C5F51303}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorLib", "CalculatorLib\CalculatorLib.csproj", "{F7B08C4B-CFC9-4DA3-8FA1-608A09E510A4}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CalculatorLibUnitTests", "CalculatorLibUnitTests\CalculatorLibUnitTests.csproj", "{1908AE72-5ABB-4F73-AE81-900400031391}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -24,5 +28,13 @@ Global
 		{90A0E8EB-E1DB-4AE7-80E0-E222C5F51303}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{90A0E8EB-E1DB-4AE7-80E0-E222C5F51303}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{90A0E8EB-E1DB-4AE7-80E0-E222C5F51303}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F7B08C4B-CFC9-4DA3-8FA1-608A09E510A4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F7B08C4B-CFC9-4DA3-8FA1-608A09E510A4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F7B08C4B-CFC9-4DA3-8FA1-608A09E510A4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F7B08C4B-CFC9-4DA3-8FA1-608A09E510A4}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1908AE72-5ABB-4F73-AE81-900400031391}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1908AE72-5ABB-4F73-AE81-900400031391}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1908AE72-5ABB-4F73-AE81-900400031391}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1908AE72-5ABB-4F73-AE81-900400031391}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
