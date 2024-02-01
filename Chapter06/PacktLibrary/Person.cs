@@ -1,6 +1,6 @@
 ﻿namespace PacktLibrary;
 
-public class Person
+public class Person : IComparable<Person?>
 {
     #region Properties;
     public string? Name { get; set; }
@@ -35,6 +35,15 @@ public class Person
         p1.Spouses.Add(p2);
         p2.Spouses.Add(p1);
     }
+
+    /// <summary>
+    /// Static method to "multiply" aka procreate and have a child together.
+    /// </summary>
+    /// <param name="p1">Parent 1</param>
+    /// <param name="p2">Parent 2</param>
+    /// <returns>A Person object that is the child of Parent 1 and Parent</returns>
+    /// <exception cref="ArgumentNullException">If p1 or p2 are null.</exception>
+    /// <exception cref="ArgumentException">If p1 and p2 are not married.</exception>
 
     public static Person Procreate(Person p1, Person p2)
     {
@@ -86,13 +95,62 @@ public class Person
     }
     #endregion
 
-    /// <summary>
-    /// Static method to "multiply" aka procreate and have a child together.
-    /// </summary>
-    /// <param name="p1">Parent 1</param>
-    /// <param name="p2">Parent 2</param>
-    /// <returns>A Person object that is the child of Parent 1 and Parent</returns>
-    /// <exception cref="ArgumentNullException">If p1 or p2 are null.</exception>
-    /// <exception cref="ArgumentException">If p1 and p2 are not married.</exception>
-    
+
+
+    #region Events
+    // Delegate field to define the event.
+    public event EventHandler? Shout; // null initially.
+                                      // Data field related to the event.
+    public int AngerLevel;
+    // Method to trigger the event in certain conditions.
+    public void Poke()
+    {
+        AngerLevel++;
+        if (AngerLevel < 3) return;
+
+        // If something is listening to the event...
+        if (Shout is not null)
+        {
+            // ...then call the delegate to "raise" the event.
+            Shout(this, EventArgs.Empty);
+        }
+    }
+    #endregion
+
+    #region Interfaces
+    public int CompareTo(Person? other)
+    {
+        int position;
+        if (other is not null)
+        {
+            if ((Name is not null) && (other.Name is not null))
+            {
+                // If both Name values are not null, then
+                // use the string implementation of CompareTo.
+                position = Name.CompareTo(other.Name);
+            }
+            else if ((Name is not null) && (other.Name is null))
+            {
+                position = -1; // this Person precedes other Person.
+            }
+            else if ((Name is null) && (other.Name is not null))
+            {
+                position = 1; // this Person follows other Person.
+            }
+            else
+            {
+                position = 0; // this and other are at same position.
+            }
+        }
+        else if (other is null)
+        {
+            position = -1; // this Person precedes other Person.
+        }
+        else
+        {
+            position = 0; // this and other are at same position.
+        }
+        return position;
+    }
+    #endregion
 }
