@@ -88,6 +88,7 @@ partial class Program
         ILookup<string, Product> productLookup = productQuery.ToLookup(
         keySelector: cp => cp.CategoryName,
         elementSelector: cp => cp.Product);
+        Console.WriteLine(productLookup);
         Console.WriteLine(productQuery.ToQueryString());
         foreach (IGrouping<string, Product> group in productLookup)
         {
@@ -110,4 +111,98 @@ partial class Program
         }
     }
 
+
+    private static void AggregateProducts()
+    {
+        SectionTitle("Aggregate products");
+        using NorthwindDb db = new();
+        // Try to get an efficient count from EF Core DbSet<T>.
+        if (db.Products.TryGetNonEnumeratedCount(out int countDbSet))
+        {
+            Console.WriteLine($"{"Product count from DbSet:",-25} {countDbSet,10}");
+        }
+        else
+        {
+            Console.WriteLine("Products DbSet does not have a Count property.");
+        }
+        // Try to get an efficient count from a List<T>.
+        List<Product> products = db.Products.ToList();
+        Console.WriteLine(db.Products.ToQueryString());
+        if (products.TryGetNonEnumeratedCount(out int countList))
+        {
+            Console.WriteLine($"{"Product count from list:",-25} {countList,10}");
+        }
+        else
+        {
+            Console.WriteLine("Products list does not have a Count property.");
+        }
+        Console.WriteLine($"{"Product count:",-25} {db.Products.Count(),10}");
+        Console.WriteLine(db.Products.ToQueryString());
+        Console.WriteLine($"{"Discontinued product count:",-27} {db.Products
+            .Count(product => product.Discontinued),8}");
+        Console.WriteLine($"{"Highest product price:",-25} {db.Products.Max(p => p.UnitPrice),10:$#,##0.00}");
+        Console.WriteLine($"{"Sum of units in stock:",-25} {db.Products
+            .Sum(p => p.UnitsInStock),10:N0}");
+        Console.WriteLine($"{"Sum of units on order:",-25} {db.Products
+            .Sum(p => p.UnitsOnOrder),10:N0}");
+        Console.WriteLine($"{"Average unit price:",-25} {db.Products
+            .Average(p => p.UnitPrice),10:$#,##0.00}");
+        Console.WriteLine($"{"Value of units in stock:",-25} {db.Products
+            .Sum(p => p.UnitPrice * p.UnitsInStock),10:$#,##0.00}");
+    }
+
+    private static void OutputTableOfProducts(Product[] products, int currentPage, int totalPages)
+    {
+        string line = new('-', count: 73);
+        string lineHalf = new('-', count: 30);
+        Console.WriteLine(line);
+        Console.WriteLine("{0,4} {1,-40} {2,12} {3,-15}",
+        "ID", "Product Name", "Unit Price", "Discontinued");
+        Console.WriteLine(line);
+        foreach (Product p in products)
+        {
+            Console.WriteLine("{0,4} {1,-40} {2,12:C} {3,-15}",
+            p.ProductId, p.ProductName, p.UnitPrice, p.Discontinued);
+        }
+        Console.WriteLine("{0} Page {1} of {2} {3}",
+        lineHalf, currentPage + 1, totalPages + 1, lineHalf);
+    }
+
+    private static void OutputPageOfProducts(IQueryable<Product> products,
+        int pageSize, int currentPage, int totalPages)
+    {
+        // We must order data before skipping and taking to ensure
+        // the data is not randomly sorted in each page.
+        var pagingQuery = products.OrderBy(p => p.ProductId)
+        .Skip(currentPage * pageSize).Take(pageSize);
+        Console.Clear(); // Clear the console/screen.
+        SectionTitle(pagingQuery.ToQueryString());
+        OutputTableOfProducts(pagingQuery.ToArray(),
+        currentPage, totalPages);
+    }
+
+    private static void PagingProducts()
+    {
+        SectionTitle("Paging products");
+        using NorthwindDb db = new();
+        int pageSize = 10;
+        int currentPage = 0;
+        int productCount = db.Products.Count();
+        int totalPages = productCount / pageSize;
+        while (true) // Use break to escape this infinite loop.
+        {
+            OutputPageOfProducts(db.Products, pageSize, currentPage, totalPages);
+            Console.Write("Press <- to page back, press -> to page forward, any key to exit.");
+
+            ConsoleKey key = Console.ReadKey().Key;
+            if (key == ConsoleKey.LeftArrow)
+                currentPage = currentPage == 0 ? totalPages : currentPage - 1;
+            else if (key == ConsoleKey.RightArrow)
+                currentPage = currentPage == totalPages ? 0 : currentPage + 1;
+            else
+                break; // Break out of the while loop.
+            Console.WriteLine();
+        }
+
+    }
 }
