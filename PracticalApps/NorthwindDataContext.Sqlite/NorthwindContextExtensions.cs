@@ -16,11 +16,12 @@ public static class NorthwindContextExtensions
     /// <param name="databaseName">Default is "Northwind.db"</param>
     /// <returns>An IServiceCollection that can be used to add more 
     /// services.</returns>
-     public static IServiceCollection AddNorthwindContext(
-         this IServiceCollection services, // The type to extend.
-         string relativePath = "..",
-         string databaseName = "Northwind.db")
-     {
+    public static IServiceCollection AddNorthwindContext(
+        this IServiceCollection services, // The type to extend.
+        string relativePath = "..",
+        string databaseName = "Northwind.db"
+        )
+    {
         string path = Path.Combine(relativePath, databaseName);
         path = Path.GetFullPath(path);
         NorthwindContextLogger.WriteLine($"Database path: {path}");
@@ -34,13 +35,13 @@ public static class NorthwindContextExtensions
             // Data Source is the modern equivalent of Filename.
             options.UseSqlite($"Data Source={path}");
             options.LogTo(NorthwindContextLogger.WriteLine,
-            new[] { Microsoft.EntityFrameworkCore
-            .Diagnostics.RelationalEventId.CommandExecuting });
+            new[] { Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting });
         },
-        // Register with a transient lifetime to avoid concurrency 
-        // issues in Blazor server-side projects.
-        contextLifetime: ServiceLifetime.Transient,
-        optionsLifetime: ServiceLifetime.Transient);
+            // Register with a transient lifetime to avoid concurrency 
+            // issues in Blazor server-side projects.
+            contextLifetime: ServiceLifetime.Transient,
+            optionsLifetime: ServiceLifetime.Transient
+        );
         return services;
-     }
+    }
 }

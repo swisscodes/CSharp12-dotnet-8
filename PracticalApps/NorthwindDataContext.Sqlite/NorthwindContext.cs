@@ -1,18 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using NorthwindModel;
 
 namespace NorthwindModel;
 
-public partial class NorthwindContext : DbContext
+public partial class NorthwindContext(DbContextOptions<NorthwindContext> options) : DbContext(options)
 {
-    public NorthwindContext()
-    {
-    }
-
-    public NorthwindContext(DbContextOptions<NorthwindContext> options)
-        : base(options)
-    {
-    }
 
     public virtual DbSet<Category> Categories { get; set; }
 
