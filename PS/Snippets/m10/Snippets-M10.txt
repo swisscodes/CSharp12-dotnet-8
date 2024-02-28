@@ -1,0 +1,146 @@
+Snippets Module 10 - ASP.NET Core Fundamentals
+------------------------------------------------
+
+Ajax call from jQuery
+
+<script type="text/javascript">
+
+    $(document).ready(function(){
+      $("button").click(function(){
+        var searchQuery = $.trim($("#txtPieName").val());
+            $("tbody").html("");
+            $.ajax({
+                type: "POST",
+                url: "/api/Search",
+                data: "\"" + searchQuery + "\"",
+                contentType: "application/json; charset=utf-8",
+                dataType: "json",
+                success: function (pies) {
+                    $.each(pies, function (i, pie) {
+                        $("tbody").append($("<tr>"));
+                        appendElement = $("tbody tr").last();
+                        appendElement.append($("<td>").html('<img src=' + pie.imageThumbnailUrl + ' width=250 class="rounded m-2">'));
+                        appendElement.append($("<td>").html('<h2><a href="/pie/details/' + pie.pieId + '" class="pie-link">' + pie.name + '</a></h2>'));
+                    });
+                },
+                error: function (xhr, status, error) {
+                        console.log(xhr)
+                }
+            });
+          });
+        });
+
+</script>
+
+
+Search icon
+
+ <ul class="navbar-nav mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" asp-controller="Pie" asp-action="Search">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" fill="currentColor" class="bi bi-search" viewBox="0 0 16 16">
+                                        <path d="M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.1zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z" />
+                                    </svg>
+                                </a>
+                            </li>
+                        </ul>
+						
+						
+Blazor files
+
+
+Imports
+
+@using Microsoft.AspNetCore.Components
+@using Microsoft.AspNetCore.Components.Forms
+@using Microsoft.AspNetCore.Components.Routing
+@using Microsoft.AspNetCore.Components.Web
+@using Microsoft.EntityFrameworkCore
+@using BethanysPieShop.Models
+@using BethanysPieShop.ViewModels
+
+
+
+SearchBlazor.razor
+@page "/searchblazor"
+@rendermode InteractiveServer
+
+<h3>Search pies</h3>
+
+
+<div class="text-center bg-blue-100">
+    <input class="border-4 w-1/3 rounded m-6 p-6 h-8
+               border-blue-300" @bind-value="SearchText"
+           @bind-value:event="oninput" placeholder="Search by pie name" @onkeyup="Search" />
+</div>
+
+
+@if (!FilteredPies.Any())
+{
+    <p>Nothing to show, sorry...</p>
+    @if (SearchText.Length < 3)
+    {
+        <p>Make sure to enter at least 3 characters to search!</p>
+    }
+}
+else
+{
+    <div class="p-2 grid grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-3">
+        @foreach (var pie in FilteredPies)
+        {
+                   <PieCard Pie=@pie></PieCard>
+        }
+    </div>
+}
+
+
+
+
+
+
+Component class
+   public partial class SearchBlazor
+    {
+        public string SearchText = "";
+        public List<Pie> FilteredPies { get; set; } = new List<Pie>();
+
+        [Inject]
+        public IPieRepository? PieRepository { get; set; }
+
+        private void Search()
+        {
+            FilteredPies.Clear();
+            if (PieRepository is not null)
+            {
+                if (SearchText.Length >= 3)
+                    FilteredPies = PieRepository.SearchPies(SearchText).ToList();
+            }
+        }
+    }
+	
+	
+Partial code
+
+
+<div class="col">
+    <div class="card pie-card">
+        <img src="@Pie?.ImageThumbnailUrl" class="card-img-top" alt="@Pie?.Name">
+        <div class="card-body pie-button">
+                     
+            <div class="d-flex justify-content-between mt-2">
+                <h2 class="text-start">
+                   @Pie?.Name
+                </h2>
+                <h5 class="text-nowrap">
+                    @Pie?.Price.ToString("c")
+                </h5>
+            </div>
+        </div>
+    </div>
+</div>
+
+  public partial class PieCard
+    {
+        [Parameter]
+        public Pie? Pie { get; set; }
+    }

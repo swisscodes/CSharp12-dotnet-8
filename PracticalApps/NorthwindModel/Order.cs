@@ -1,8 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
-using Microsoft.EntityFrameworkCore;
+using System.Xml.Serialization;
 
 namespace NorthwindModel;
 
@@ -16,7 +15,7 @@ namespace NorthwindModel;
 [Index("ShipVia", Name = "ShippersOrders")]
 public partial class Order
 {
-    [Key, RegularExpression("[A-Z]{5}")]
+    [Key,]
     public int OrderId { get; set; }
 
     [Column(TypeName = "nchar (5)")]
@@ -28,9 +27,6 @@ public partial class Order
 
     [Column(TypeName = "datetime")]
     public DateTime? OrderDate { get; set; }
-
-    [Column(TypeName = "datetime")]
-    public string? RequiredDate { get; set; }
 
     [Column(TypeName = "datetime")]
     public DateTime? ShippedDate { get; set; }
@@ -69,11 +65,8 @@ public partial class Order
     [InverseProperty("Orders")]
     public virtual Customer? Customer { get; set; }
 
-    [ForeignKey("EmployeeId")]
-    [InverseProperty("Orders")]
-    public virtual Employee? Employee { get; set; }
-
     [InverseProperty("Order")]
+    [XmlIgnore]
     public virtual ICollection<OrderDetail> OrderDetails { get; set; } = new List<OrderDetail>();
 
     [ForeignKey("ShipVia")]

@@ -35,7 +35,7 @@ public static class NorthwindContextExtensions
             // Data Source is the modern equivalent of Filename.
             options.UseSqlite($"Data Source={path}");
             options.LogTo(NorthwindContextLogger.WriteLine,
-            new[] { Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting });
+                new[] { Microsoft.EntityFrameworkCore.Diagnostics.RelationalEventId.CommandExecuting });
         },
             // Register with a transient lifetime to avoid concurrency 
             // issues in Blazor server-side projects.

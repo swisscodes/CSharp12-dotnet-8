@@ -1,0 +1,57 @@
+﻿@model HomeViewModel
+
+
+<div id="carouselImages" class="carousel slide" data-bs-ride="true">
+    <div class="carousel-indicators">
+        <button type="button" data-bs-target="#carouselImages" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+        <button type="button" data-bs-target="#carouselImages" data-bs-slide-to="1" aria-label="Slide 2"></button>
+        <button type="button" data-bs-target="#carouselImages" data-bs-slide-to="2" aria-label="Slide 3"></button>
+    </div>
+    <div class="carousel-inner">
+        <div class="carousel-item active">
+            <img src="~/Images/carousel1.jpg" class="d-block w-100" alt="Carousel image 1">
+        </div>
+        <div class="carousel-item">
+            <img src="~/Images/carousel2.jpg" class="d-block w-100" alt="Carousel image 2">
+        </div>
+        <div class="carousel-item">
+            <img src="~/Images/carousel3.jpg" class="d-block w-100" alt="Carousel image 3">
+        </div>
+    </div>
+</div>
+
+<div class="text-center">
+    <img src="Images/bethanys-pie-shop-logomark.png" class="logo-mark mx-auto" />
+    <h1>Pies of the week</h1>
+    <h5>Enjoy a weekly selection of our favorite pies</h5>
+
+    <div class="row pies-of-the-week">
+        <div class="row row-cols-1 row-cols-md-3 g-4">
+            @foreach (var pie in Model.PiesOfTheWeek)
+            {
+                <div class="col">
+            <div class="card pie-card">
+                <img src="@pie.ImageThumbnailUrl" class="card-img-top" alt="@pie.Name">
+                <div class="card-body pie-button">
+                    <h4 class="d-grid">
+                    </h4>
+
+                    <div class="d-flex justify-content-between mt-2">
+                        <h2 class="text-start">
+                            <a asp-controller="Pie"
+                               asp-action="Details"
+                               asp-route-id="@pie.PieId"
+                               class="pie-link">@pie.Name</a>
+                        </h2>
+                        <h5 class="text-nowrap">
+                            @pie.Price.ToString("c")
+                        </h5>
+                    </div>
+                </div>
+            </div>
+        </div>
+            }
+        </div>
+
+    </div>
+</div>

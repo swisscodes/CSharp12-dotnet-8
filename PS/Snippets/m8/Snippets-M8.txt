@@ -1,0 +1,284 @@
+Snippets Module 8 - ASP.NET Core Fundamentals
+-----------------------------------------------
+
+Classes added for Orders
+
+public interface IOrderRepository
+    {
+        void CreateOrder(Order order);
+    }
+	
+
+
+public class Order
+    {
+        public int OrderId { get; set; }
+
+        public List<OrderDetail>? OrderDetails { get; set; }
+
+        public string FirstName { get; set; } = string.Empty;
+
+        public string LastName { get; set; } = string.Empty;
+
+        public string AddressLine1 { get; set; } = string.Empty;
+
+        public string? AddressLine2 { get; set; }
+
+        public string ZipCode { get; set; } = string.Empty;
+
+        public string City { get; set; } = string.Empty;
+
+        public string? State { get; set; }
+
+        public string Country { get; set; } = string.Empty;
+
+        public string PhoneNumber { get; set; } = string.Empty;
+
+        public string Email { get; set; } = string.Empty;
+
+        public decimal OrderTotal { get; set; }
+
+        public DateTime OrderPlaced { get; set; }
+    }
+	
+	
+	
+public class OrderDetail
+    {
+        public int OrderDetailId { get; set; }
+        public int OrderId { get; set; }
+        public int PieId { get; set; }
+        public int Amount { get; set; }
+        public decimal Price { get; set; }
+        public Pie Pie { get; set; } = default!;
+        public Order Order { get; set; } = default!;
+    }
+	
+	
+	
+public class OrderRepository : IOrderRepository
+    {
+        private readonly BethanysPieShopDbContext _bethanysPieShopDbContext;
+        private readonly IShoppingCart _shoppingCart;
+
+        public OrderRepository(BethanysPieShopDbContext bethanysPieShopDbContext, IShoppingCart shoppingCart)
+        {
+            _bethanysPieShopDbContext = bethanysPieShopDbContext;
+            _shoppingCart = shoppingCart;
+        }
+
+        public void CreateOrder(Order order)
+        {
+            order.OrderPlaced = DateTime.Now;
+
+            List<ShoppingCartItem>? shoppingCartItems = _shoppingCart.ShoppingCartItems;
+            order.OrderTotal = _shoppingCart.GetShoppingCartTotal();
+
+            order.OrderDetails = new List<OrderDetail>();
+
+            //adding the order with its details
+
+            foreach (ShoppingCartItem? shoppingCartItem in shoppingCartItems)
+            {
+                var orderDetail = new OrderDetail
+                {
+                    Amount = shoppingCartItem.Amount,
+                    PieId = shoppingCartItem.Pie.PieId,
+                    Price = shoppingCartItem.Pie.Price
+                };
+
+                order.OrderDetails.Add(orderDetail);
+            }
+
+            _bethanysPieShopDbContext.Orders.Add(order);
+
+            _bethanysPieShopDbContext.SaveChanges();
+        }
+    }
+	
+
+UI for form fields
+
+<div class="col-12">
+                <label asp-for="LastName" class="form-label"></label>
+                <input asp-for="LastName" class="form-control" />
+            </div>
+            
+            <div class="col-12">
+                <label asp-for="AddressLine1" class="form-label"></label>
+                <input asp-for="AddressLine1" class="form-control"/>
+            </div>
+            
+            <div class="col-12">
+                <label asp-for="AddressLine2" class="form-label"></label>
+                <input asp-for="AddressLine2" class="form-control" />
+            </div>
+            
+            <div class="col-6">
+                <label asp-for="City" class="form-label"></label>
+                <input asp-for="City" class="form-control" />
+            </div>
+            
+            <div class="col-6">
+                <label asp-for="State" class="form-label"></label>
+                <input asp-for="State" class="form-control" />
+            </div>
+            
+            <div class="col-6">
+                <label asp-for="ZipCode" class="form-label"></label>
+                <input asp-for="ZipCode" class="form-control" />
+            </div>
+            
+            <div class="col-6">
+                <label asp-for="Country" class="form-label"></label>
+                <input asp-for="Country" class="form-control" />
+            </div>
+            
+            <div class="col-12">
+                <label asp-for="Email" class="form-label"></label>
+                <input asp-for="Email" class="form-control"/>
+            </div>
+            
+            <div class="col-12">
+                <label asp-for="PhoneNumber" class="form-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+            </div>
+			
+			
+Order with validations
+
+public class Order
+    {
+        [BindNever]
+        public int OrderId { get; set; }
+
+        public List<OrderDetail>? OrderDetails { get; set; }
+
+        [Required(ErrorMessage = "Please enter your first name")]
+        [Display(Name = "First name")]
+        [StringLength(50)]
+        public string FirstName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Please enter your last name")]
+        [Display(Name = "Last name")]
+        [StringLength(50)]
+        public string LastName { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Please enter your address")]
+        [StringLength(100)]
+        [Display(Name = "Address Line 1")]
+        public string AddressLine1 { get; set; } = string.Empty;
+
+        [Display(Name = "Address Line 2")]
+        public string? AddressLine2 { get; set; }
+
+        [Required(ErrorMessage = "Please enter your zip code")]
+        [Display(Name = "Zip code")]
+        [StringLength(10, MinimumLength = 4)]
+        public string ZipCode { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Please enter your city")]
+        [StringLength(50)]
+        public string City { get; set; } = string.Empty;
+
+        [StringLength(10)]
+        public string? State { get; set; }
+
+        [Required(ErrorMessage = "Please enter your country")]
+        [StringLength(50)]
+        public string Country { get; set; } = string.Empty;
+
+        [Required(ErrorMessage = "Please enter your phone number")]
+        [StringLength(25)]
+        [DataType(DataType.PhoneNumber)]
+        [Display(Name = "Phone number")]
+        public string PhoneNumber { get; set; } = string.Empty;
+
+        [Required]
+        [StringLength(50)]
+        [DataType(DataType.EmailAddress)]
+        [RegularExpression(@"(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|""(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*"")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])",
+            ErrorMessage = "The email address is not entered in a correct format")]
+        public string Email { get; set; } = string.Empty;
+
+        [BindNever]
+        public decimal OrderTotal { get; set; }
+
+        [BindNever]
+        public DateTime OrderPlaced { get; set; }
+    }
+	
+	
+Order Page
+
+<div asp-validation-summary="All" class="text-danger"></div>
+    <div class="col-6">
+        <div class="row g-2">
+            <div class="col-12">
+                <label asp-for="Order.FirstName" class="form-label"></label>
+                <input asp-for="Order.FirstName" class="form-control" />
+                <span asp-validation-for="Order.FirstName" class="text-danger"></span>
+            </div>
+
+            <div class="col-12">
+                <label asp-for="Order.LastName" class="form-label"></label>
+                <input asp-for="Order.LastName" class="form-control" />
+                <span asp-validation-for="Order.LastName" class="text-danger"></span>
+            </div>
+            
+            <div class="col-12">
+                <label asp-for="Order.AddressLine1" class="form-label"></label>
+                <input asp-for="Order.AddressLine1" class="form-control"/>
+                <span asp-validation-for="Order.AddressLine1" class="text-danger"></span>
+            </div>
+            
+            <div class="col-12">
+                <label asp-for="Order.AddressLine2" class="form-label"></label>
+                <input asp-for="Order.AddressLine2" class="form-control" />
+                <span asp-validation-for="Order.AddressLine2" class="text-danger"></span>
+            </div>
+            
+            <div class="col-6">
+                <label asp-for="Order.City" class="form-label"></label>
+                <input asp-for="Order.City" class="form-control" />
+                <span asp-validation-for="Order.City" class="text-danger"></span>
+            </div>
+            
+            <div class="col-6">
+                <label asp-for="Order.State" class="form-label"></label>
+                <input asp-for="Order.State" class="form-control" />
+                <span asp-validation-for="Order.State" class="text-danger"></span>
+            </div>
+            
+            <div class="col-6">
+                <label asp-for="Order.ZipCode" class="form-label"></label>
+                <input asp-for="Order.ZipCode" class="form-control" />
+                <span asp-validation-for="Order.ZipCode" class="text-danger"></span>
+            </div>
+            
+            <div class="col-6">
+                <label asp-for="Order.Country" class="form-label"></label>
+                <input asp-for="Order.Country" class="form-control" />
+                <span asp-validation-for="Order.Country" class="text-danger"></span>
+            </div>
+            
+            <div class="col-12">
+                <label asp-for="Order.Email" class="form-label"></label>
+                <input asp-for="Order.Email" class="form-control"/>
+                <span asp-validation-for="Order.Email" class="text-danger"></span>
+            </div>
+            
+            <div class="col-12">
+                <label asp-for="Order.PhoneNumber" class="form-label"></label>
+                <input asp-for="Order.PhoneNumber" class="form-control" />
+                <span asp-validation-for="Order.PhoneNumber" class="text-danger"></span>
+            </div>
+
+        </div>
+
+         <div class="mt-2">
+            <div class="col-md-offset-2 col-md-5">
+                <input type="submit" class="btn btn-secondary" value="Complete order" />
+            </div>
+        </div>
+    </div>
