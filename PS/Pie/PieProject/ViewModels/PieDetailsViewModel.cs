@@ -2,8 +2,8 @@
 
 namespace PieProject.ViewModels;
 
-public class PieListViewModel()
+public class PieDetailsViewModel()
 {
-    public required IEnumerable<Pie> Pies { get; init; }
+    public required Pie Pie { get; init; }
     public string? CurrentCategory { get; init; }
 }

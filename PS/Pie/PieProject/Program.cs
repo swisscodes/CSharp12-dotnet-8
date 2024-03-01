@@ -1,3 +1,5 @@
+using PieProject.Models;
+
 var builder = WebApplication.CreateBuilder(args);
 
 //services
@@ -15,5 +17,6 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapDefaultControllerRoute();
+DbInit.Seed(app);
 
 app.Run();

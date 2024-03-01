@@ -1,0 +1,21 @@
+﻿@{
+}
+    
+<h3 class="my-5">
+    @Model.Pie.Name
+</h3>
+
+<div class="row gx-5">
+    <img alt="@Model.Pie.Name" src="@Model.Pie.ImageUrl" class="img-fluid col-5" />
+    <div class="col-7">
+        <h4>@Model.Pie.ShortDescription</h4>
+        <p>@Model.Pie.LongDescription</p>
+        <h3 class="pull-right">@Model.Pie.Price.ToString("c")</h3>
+        <div class="addToCart">
+            <p class="button">
+
+            </p>
+        </div>
+    </div>
+</div>
+
