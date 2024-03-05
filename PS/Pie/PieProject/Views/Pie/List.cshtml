@@ -6,24 +6,7 @@
 
     @foreach (Pie pie in Model.Pies)
     {
-        <div class="col">
-            <div class="card pie-card">
-                <img src="@pie.ImageThumbnailUrl" class="card-img-top" alt="@pie.Name">
-                <div class="card-body pie-button">
-                    <h4 class="d-grid">
-                    </h4>
-
-                    <div class="d-flex justify-content-between mt-2">
-                        <h2 class="text-start">
-                            <a class="pie-link" asp-controller="pie" asp-action="details" asp-route-id="@pie.PieId">@pie.Name</a>
-                        </h2>
-                        <h5 class="text-nowrap">
-                            @pie.Price.ToString("c")
-                        </h5>
-                    </div>
-                </div>
-            </div>
-        </div>
+        <partial name="_PieCard" model="pie" />
     }
 
 </div>

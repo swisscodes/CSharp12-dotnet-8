@@ -7,7 +7,7 @@ using PieProject.Models;
 
 #nullable disable
 
-namespace PieProject.Migrations
+namespace PieProject.models.Migrations
 {
     [DbContext(typeof(PieProjectDbContext))]
     partial class PieProjectDbContextModelSnapshot : ModelSnapshot
@@ -87,6 +87,30 @@ namespace PieProject.Migrations
                     b.ToTable("Pies");
                 });
 
+            modelBuilder.Entity("PieProject.Models.ShoppingCartItem", b =>
+                {
+                    b.Property<int>("ShoppingCartItemId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("ShoppingCartItemId"));
+
+                    b.Property<int>("Amount")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PieId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("ShoppingCartId")
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("ShoppingCartItemId");
+
+                    b.HasIndex("PieId");
+
+                    b.ToTable("ShoppingCartItems");
+                });
+
             modelBuilder.Entity("PieProject.Models.Pie", b =>
                 {
                     b.HasOne("PieProject.Models.Category", "Category")
@@ -96,6 +120,17 @@ namespace PieProject.Migrations
                         .IsRequired();
 
                     b.Navigation("Category");
+                });
+
+            modelBuilder.Entity("PieProject.Models.ShoppingCartItem", b =>
+                {
+                    b.HasOne("PieProject.Models.Pie", "Pie")
+                        .WithMany()
+                        .HasForeignKey("PieId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Pie");
                 });
 
             modelBuilder.Entity("PieProject.Models.Category", b =>

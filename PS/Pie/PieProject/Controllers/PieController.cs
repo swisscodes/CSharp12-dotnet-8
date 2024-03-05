@@ -10,7 +10,7 @@ public class PieController(IPieRepo pieRepo) : Controller
         PieListViewModel pieListViewModel = new()
         {
             Pies = pieRepo.AllPies,
-            CurrentCategory = "Cheese cake",
+            CurrentCategory = "All Pies",
         };
 
         return View(pieListViewModel);
