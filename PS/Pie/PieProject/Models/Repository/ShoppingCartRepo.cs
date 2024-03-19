@@ -5,7 +5,7 @@ namespace PieProject.Models.Repository;
 public class ShoppingCartRepo(PieProjectDbContext context) : IShoppingCartRepo
 {
     public string? ShoppingCartId { get; set; }
-    public IEnumerable<ShoppingCartItem>? ShoppingCartItems { get; set; }
+    public ICollection<ShoppingCartItem>? ShoppingCartItems { get; set; }
 
 
     public static ShoppingCartRepo GetCart(IServiceProvider services)
@@ -68,7 +68,7 @@ public class ShoppingCartRepo(PieProjectDbContext context) : IShoppingCartRepo
         return localAmount;
     }
 
-    public IEnumerable<ShoppingCartItem> GetShoppingCartItems()
+    public ICollection<ShoppingCartItem> GetShoppingCartItems()
     {
         return ShoppingCartItems ??= [.. context.ShoppingCartItems
             .Where(c => c.ShoppingCartId == ShoppingCartId).Include(s => s.Pie)];

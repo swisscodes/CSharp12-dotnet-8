@@ -34,8 +34,11 @@
                 <h4 class="col text-end">@Model.ShoppingCartTotal.ToString("c")</h4>
             </div>
             <hr />
+            
             <div class="text-center d-grid">
-                
+                <a class="btn btn-secondary" asp-controller="Order" asp-action="checkout">
+                    <h4>Check out now!</h4>
+                </a>
             </div>
         </div>
     </div>

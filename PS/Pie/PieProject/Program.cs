@@ -6,6 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddSession(); //for sessions
 builder.Services.AddHttpContextAccessor();// to be able use the IHttpContextAccessor
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
 // Our services
 AllServeices(builder);
@@ -23,6 +24,7 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapDefaultControllerRoute();
+app.MapRazorPages();
 DbInit.Seed(app);
 
 app.Run();

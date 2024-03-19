@@ -8,6 +8,7 @@ static partial class Program
     {
         builder.Services.AddScoped<ICategoryRepo, CategoryRepo>();
         builder.Services.AddScoped<IPieRepo, PieRepo>();
+        builder.Services.AddScoped<IOrderRepo, OrderRepo>();
         builder.Services.AddScoped<IShoppingCartRepo, ShoppingCartRepo>(sp => ShoppingCartRepo.GetCart(sp));
         builder.Services.AddDbContext<PieProjectDbContext>(options =>
         {

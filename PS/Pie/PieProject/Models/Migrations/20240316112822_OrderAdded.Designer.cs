@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using PieProject.Models;
 
@@ -10,9 +11,11 @@ using PieProject.Models;
 namespace PieProject.models.Migrations
 {
     [DbContext(typeof(PieProjectDbContext))]
-    partial class PieProjectDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240316112822_OrderAdded")]
+    partial class OrderAdded
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -89,7 +92,7 @@ namespace PieProject.models.Migrations
                     b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<string>("ZipCode")
+                    b.Property<string>("Zipcode")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
